@@ -3,7 +3,7 @@ from vllm import LLM, SamplingParams
 import json
 from tqdm import tqdm
 
-dataset_name = "livecodebench/code_generation_lite"
+dataset_name = "ise-uiuc/Magicoder-OSS-Instruct-75K"
 if dataset_name == "HuggingFaceH4/CodeAlpaca_20K":
     question_field = "prompt"
     n = 4 # number of generations per prompt
@@ -12,6 +12,9 @@ elif dataset_name == "bigcode/self-oss-instruct-sc2-exec-filter-50k":
     n = 4
 elif dataset_name == "livecodebench/code_generation_lite":
     question_field = "question_content"
+    n = 4
+elif dataset_name == "ise-uiuc/Magicoder-OSS-Instruct-75K":
+    question_field = "problem"
     n = 4
 else:
     raise NotImplementedError(f"Dataset {dataset_name} not supported yet.")
@@ -24,7 +27,7 @@ enable_prefix_caching = False
 trust_remote_code = False
 ####################################
 max_tokens = 2000
-collect_temperature = 2.0
+collect_temperature = 0.2
 top_p = 0.95
 ##################################
 gen_batch_size = 1

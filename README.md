@@ -3,3 +3,4 @@
 ### in collect branch: run collect_math.py
 #### you can download collection here: https://drive.google.com/drive/folders/1eMILDaqI1klxQUHbkgSVrBPTzAS4MW_m?usp=sharing
 ### in distill branch: run distill.py
+#### distilled model: https://drive.google.com/drive/folders/1RdttxXsEmWP0RMqk0f_lGyp6UeTDP8mm?usp=sharing

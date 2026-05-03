@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import re
 
 class GSM8K_Test:
-    def __init__(self):
+    def __init__(self, tokenizer_path="Qwen/Qwen2.5-Math-1.5B-Instruct"):
         self.test_dataset = load_dataset("openai/gsm8k", 'main')['test']
         self.prompt_head = "<|im_start|>system\nPlease reason step by step, and put your final answer within \\boxed{}.<|im_end|>\n<|im_start|>user\n"
         self.prompt_tail = "<|im_end|>\n<|im_start|>assistant\n"
@@ -17,7 +17,7 @@ class GSM8K_Test:
         self.answers = [match.group(1) for match in self.answers]
         assert self.answers.count(None) == 0, "Some answers are not in the expected format."
         assert len(self.questions) == len(self.answers) == len(self.test_dataset), "Length mismatch among questions, answers and dataset."
-        self.tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-Math-1.5B-Instruct")
+        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
 
     def test_pass1(self, model, batch_size, device):
         model.eval() # hugging face model
@@ -44,17 +44,15 @@ class GSM8K_Test:
         return correct / len(self.test_dataset)
     
 if __name__ == "__main__":
-    from transformers import AutoTokenizer
-
-    gsm8k_test = GSM8K_Test()
-    teacher_model = "Qwen/Qwen2.5-Math-7B-Instruct"
-    tokenizer = "Qwen/Qwen2.5-Math-7B-Instruct"
+    model_path = "saved_model/model_final"
+    tokenizer_path = "saved_model/tokenizer"
     device = "cuda:0"
+
+    gsm8k_test = GSM8K_Test(tokenizer_path=tokenizer_path)
     model = AutoModelForCausalLM.from_pretrained(
-        teacher_model,
-        dtype=torch.bfloat16,
+        model_path,
+        torch_dtype=torch.bfloat16,
         device_map="cuda:0"
     )
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer)
     accuracy = gsm8k_test.test_pass1(model=model, batch_size=128, device=device)
     print(f"Accuracy: {accuracy}")
